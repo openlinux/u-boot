@@ -199,7 +199,7 @@ int saveenv(void)
 		return 1;
 
 	res = (char *)&env_new.data;
-	len = hexport('\0', &res, ENV_SIZE);
+	len = hexport_r(&env_htab, '\0', &res, ENV_SIZE);
 	if (len < 0) {
 		error("Cannot export environment: errno = %d\n", errno);
 		return 1;
@@ -256,7 +256,7 @@ int saveenv(void)
 		return 1;
 
 	res = (char *)&env_new.data;
-	len = hexport('\0', &res, ENV_SIZE);
+	len = hexport_r(&env_htab, '\0', &res, ENV_SIZE);
 	if (len < 0) {
 		error("Cannot export environment: errno = %d\n", errno);
 		return 1;
@@ -297,7 +297,7 @@ int readenv(size_t offset, u_char * buf)
 			offset += blocksize;
 		} else {
 			char_ptr = &buf[amount_loaded];
-			if (nand_read(&nand_info[0], offset, &len, char_ptr))
+			if (nand_read_skip_bad(&nand_info[0], offset, &len, char_ptr))
 				return 1;
 			offset += blocksize;
 			amount_loaded += len;

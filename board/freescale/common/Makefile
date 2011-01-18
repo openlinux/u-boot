@@ -24,14 +24,13 @@
 include $(TOPDIR)/config.mk
 
 ifneq ($(OBJTREE),$(SRCTREE))
-$(shell mkdir -p $(obj)board/$(VENDOR)/common)
+$(shell mkdir -p $(obj)board/freescale/common)
 endif
 
-LIB	= $(obj)lib$(VENDOR).o
+LIB	= $(obj)libfreescale.o
 
 COBJS-$(CONFIG_FSL_CADMUS)	+= cadmus.o
 COBJS-$(CONFIG_FSL_VIA)		+= cds_via.o
-COBJS-$(CONFIG_FSL_DIU_FB)	+= fsl_diu_fb.o
 COBJS-$(CONFIG_FSL_PIXIS)	+= pixis.o
 COBJS-$(CONFIG_FSL_NGPIXIS)	+= ngpixis.o
 COBJS-$(CONFIG_PQ_MDS_PIB)	+= pq-mds-pib.o

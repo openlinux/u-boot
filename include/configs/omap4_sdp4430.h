@@ -102,6 +102,7 @@
 
 /* TWL6030 */
 #define CONFIG_TWL6030_POWER		1
+#define CONFIG_CMD_BAT			1
 
 /* MMC */
 #define CONFIG_GENERIC_MMC		1
@@ -139,6 +140,7 @@
 
 /* Disabled commands */
 #undef CONFIG_CMD_NET
+#undef CONFIG_CMD_NFS
 #undef CONFIG_CMD_FPGA		/* FPGA configuration Support   */
 #undef CONFIG_CMD_IMLS		/* List all found images        */
 

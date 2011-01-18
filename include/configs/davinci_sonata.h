@@ -126,7 +126,6 @@
 #define CONFIG_SYS_NAND_HW_ECC
 #define CONFIG_SYS_MAX_NAND_DEVICE	1	/* Max number of NAND devices */
 #define CONFIG_ENV_OFFSET		0x0	/* Block 0--not used by bootcode */
-#define DEF_BOOTM		""
 #elif defined(CONFIG_SYS_USE_NOR)
 #ifdef CONFIG_NOR_UART_BOOT
 #define CONFIG_SKIP_LOWLEVEL_INIT	/* U-Boot is loaded by a bootloader */
@@ -199,11 +198,13 @@
 #else
 #error "Either CONFIG_SYS_USE_NAND or CONFIG_SYS_USE_NOR _MUST_ be defined !!!"
 #endif
-/*=======================*/
-/* KGDB support (if any) */
-/*=======================*/
-#ifdef CONFIG_CMD_KGDB
-#define CONFIG_KGDB_BAUDRATE	115200	/* speed to run kgdb serial port */
-#define CONFIG_KGDB_SER_INDEX	1	/* which serial port to use */
-#endif
+
+#define CONFIG_MAX_RAM_BANK_SIZE	(256 << 20)	/* 256 MB */
+
+#define CONFIG_SYS_SDRAM_BASE		PHYS_SDRAM_1
+#define CONFIG_SYS_INIT_RAM_SIZE	0x1000
+#define CONFIG_SYS_INIT_SP_ADDR		(CONFIG_SYS_SDRAM_BASE + \
+					 CONFIG_SYS_INIT_RAM_SIZE - \
+					 GENERATED_GBL_DATA_SIZE)
+
 #endif /* __CONFIG_H */

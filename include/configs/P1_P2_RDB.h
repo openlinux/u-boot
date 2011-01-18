@@ -1,5 +1,5 @@
 /*
- * Copyright 2009-2010 Freescale Semiconductor, Inc.
+ * Copyright 2009-2011 Freescale Semiconductor, Inc.
  *
  * See file CREDITS for list of people who contributed to this
  * project.
@@ -146,7 +146,6 @@ extern unsigned long get_board_sys_clk(unsigned long dummy);
 #define CONFIG_FSL_DDR2
 #undef CONFIG_FSL_DDR_INTERACTIVE
 #undef CONFIG_SPD_EEPROM		/* Use SPD EEPROM for DDR setup */
-#undef CONFIG_DDR_DLL
 
 #define CONFIG_MEM_INIT_VALUE	0xDeadBeef
 
@@ -201,9 +200,10 @@ extern unsigned long get_board_sys_clk(unsigned long dummy);
 #define CONFIG_SYS_FLASH_ERASE_TOUT	60000	/* Flash Erase Timeout (ms) */
 #define CONFIG_SYS_FLASH_WRITE_TOUT	500	/* Flash Write Timeout (ms) */
 
-#if defined(CONFIG_SYS_SPL) || defined(CONFIG_RAMBOOT_NAND) \
-	|| defined(CONFIG_RAMBOOT_SDCARD) || defined(CONFIG_RAMBOOT_SPIFLASH)
+#if defined(CONFIG_RAMBOOT_NAND) || defined(CONFIG_RAMBOOT_SDCARD) || \
+    defined(CONFIG_RAMBOOT_SPIFLASH)
 #define CONFIG_SYS_RAMBOOT
+#define CONFIG_SYS_EXTRA_ENV_RELOC
 #else
 #undef CONFIG_SYS_RAMBOOT
 #endif
@@ -358,6 +358,7 @@ extern unsigned long get_board_sys_clk(unsigned long dummy);
  */
 
 /* controller 2, Slot 2, tgtid 2, Base address 9000 */
+#define CONFIG_SYS_PCIE2_NAME		"Slot 1"
 #define CONFIG_SYS_PCIE2_MEM_VIRT	0xa0000000
 #define CONFIG_SYS_PCIE2_MEM_BUS	0xa0000000
 #define CONFIG_SYS_PCIE2_MEM_PHYS	0xa0000000
@@ -368,6 +369,7 @@ extern unsigned long get_board_sys_clk(unsigned long dummy);
 #define CONFIG_SYS_PCIE2_IO_SIZE	0x00010000	/* 64k */
 
 /* controller 1, Slot 1, tgtid 1, Base address a000 */
+#define CONFIG_SYS_PCIE1_NAME		"Slot 2"
 #define CONFIG_SYS_PCIE1_MEM_VIRT	0xc0000000
 #define CONFIG_SYS_PCIE1_MEM_BUS	0xc0000000
 #define CONFIG_SYS_PCIE1_MEM_PHYS	0xc0000000
@@ -435,14 +437,6 @@ extern unsigned long get_board_sys_clk(unsigned long dummy);
 #define CONFIG_ETHPRIME		"eTSEC1"
 
 #define CONFIG_PHY_GIGE		1	/* Include GbE speed/duplex detection */
-
-/* TBI PHY configuration for SGMII mode */
-#define CONFIG_TSEC_TBICR_SETTINGS ( \
-		TBICR_PHY_RESET \
-		| TBICR_ANEG_ENABLE \
-		| TBICR_FULL_DUPLEX \
-		| TBICR_SPEED1_SET \
-		)
 
 #endif	/* CONFIG_TSEC_ENET */
 
@@ -548,6 +542,7 @@ extern unsigned long get_board_sys_clk(unsigned long dummy);
  * the maximum mapped by the Linux kernel during initialization.
  */
 #define CONFIG_SYS_BOOTMAPSZ	(16 << 20)/* Initial Memory map for Linux*/
+#define CONFIG_SYS_BOOTM_LEN	(16 << 20)	/* Increase max gunzip size */
 
 #if defined(CONFIG_CMD_KGDB)
 #define CONFIG_KGDB_BAUDRATE	230400	/* speed to run kgdb serial port */

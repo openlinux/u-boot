@@ -123,34 +123,6 @@ _bss_start_ofs:
 _bss_end_ofs:
 	.word _end - _start
 
-.globl _datarel_start_ofs
-_datarel_start_ofs:
-	.word __datarel_start - _start
-
-.globl _datarelrolocal_start_ofs
-_datarelrolocal_start_ofs:
-	.word __datarelrolocal_start - _start
-
-.globl _datarellocal_start_ofs
-_datarellocal_start_ofs:
-	.word __datarellocal_start - _start
-
-.globl _datarelro_start_ofs
-_datarelro_start_ofs:
-	.word __datarelro_start - _start
-
-.globl _rel_dyn_start_ofs
-_rel_dyn_start_ofs:
-	.word __rel_dyn_start - _start
-
-.globl _rel_dyn_end_ofs
-_rel_dyn_end_ofs:
-	.word __rel_dyn_end - _start
-
-.globl _dynsym_start_ofs
-_dynsym_start_ofs:
-	.word __dynsym_start - _start
-
 /* IRQ stack memory (calculated at run-time) + 8 bytes */
 .globl IRQ_STACK_START_IN
 IRQ_STACK_START_IN:
@@ -251,6 +223,7 @@ skip_tcmdisable:
 /* Set stackpointer in internal RAM to call board_init_f */
 call_board_init_f:
 	ldr	sp, =(CONFIG_SYS_INIT_SP_ADDR)
+	bic	sp, sp, #7 /* 8-byte alignment for ABI compliance */
 	ldr	r0,=0x00000000
 	bl	board_init_f
 
@@ -268,22 +241,22 @@ relocate_code:
 	mov	r4, r0	/* save addr_sp */
 	mov	r5, r1	/* save addr of gd */
 	mov	r6, r2	/* save addr of destination */
-	mov	r7, r2	/* save addr of destination */
 
 	/* Set up the stack						    */
 stack_setup:
 	mov	sp, r4
 
 	adr	r0, _start
+	cmp	r0, r6
+	beq	clear_bss		/* skip relocation */
+	mov	r1, r6			/* r1 <- scratch for copy_loop */
 	ldr	r2, _TEXT_BASE
 	ldr	r3, _bss_start_ofs
 	add	r2, r0, r3		/* r2 <- source end address	    */
-	cmp	r0, r6
-	beq	clear_bss
 
 copy_loop:
 	ldmia	r0!, {r9-r10}		/* copy from source address [r0]    */
-	stmia	r6!, {r9-r10}		/* copy to   target address [r1]    */
+	stmia	r1!, {r9-r10}		/* copy to   target address [r1]    */
 	cmp	r0, r2			/* until source end address [r2]    */
 	blo	copy_loop
 
@@ -292,7 +265,7 @@ copy_loop:
 	 * fix .rel.dyn relocations
 	 */
 	ldr	r0, _TEXT_BASE		/* r0 <- Text base */
-	sub	r9, r7, r0		/* r9 <- relocation offset */
+	sub	r9, r6, r0		/* r9 <- relocation offset */
 	ldr	r10, _dynsym_start_ofs	/* r10 <- sym table ofs */
 	add	r10, r10, r0		/* r10 <- sym table in FLASH */
 	ldr	r2, _rel_dyn_start_ofs	/* r2 <- rel dyn start ofs */
@@ -300,13 +273,13 @@ copy_loop:
 	ldr	r3, _rel_dyn_end_ofs	/* r3 <- rel dyn end ofs */
 	add	r3, r3, r0		/* r3 <- rel dyn end in FLASH */
 fixloop:
-	ldr	r0, [r2]	/* r0 <- location to fix up, IN FLASH! */
-	add	r0, r0, r9	/* r0 <- location to fix up in RAM */
+	ldr	r0, [r2]		/* r0 <- location to fix up, IN FLASH! */
+	add	r0, r0, r9		/* r0 <- location to fix up in RAM */
 	ldr	r1, [r2, #4]
-	and	r8, r1, #0xff
-	cmp	r8, #23		/* relative fixup? */
+	and	r7, r1, #0xff
+	cmp	r7, #23			/* relative fixup? */
 	beq	fixrel
-	cmp	r8, #2		/* absolute fixup? */
+	cmp	r7, #2			/* absolute fixup? */
 	beq	fixabs
 	/* ignore unknown type of fixup */
 	b	fixnext
@@ -323,7 +296,7 @@ fixrel:
 	add	r1, r1, r9
 fixnext:
 	str	r1, [r0]
-	add	r2, r2, #8	/* each rel.dyn entry is 8 bytes */
+	add	r2, r2, #8		/* each rel.dyn entry is 8 bytes */
 	cmp	r2, r3
 	blo	fixloop
 #endif
@@ -371,7 +344,7 @@ clear_bss:
 	ldr	r0, _bss_start_ofs
 	ldr	r1, _bss_end_ofs
 	ldr	r3, _TEXT_BASE		/* Text base */
-	mov	r4, r7			/* reloc addr */
+	mov	r4, r6			/* reloc addr */
 	add	r0, r0, r4
 	add	r1, r1, r4
 	mov	r2, #0x00000000		/* clear			    */
@@ -400,13 +373,20 @@ _nand_boot: .word nand_boot
 	add     lr, lr, r9
 	/* setup parameters for board_init_r */
 	mov	r0, r5		/* gd_t */
-	mov	r1, r7		/* dest_addr */
+	mov	r1, r6		/* dest_addr */
 	/* jump to it ... */
 	mov	pc, lr
 
 _board_init_r_ofs:
 	.word board_init_r - _start
 #endif
+
+_rel_dyn_start_ofs:
+	.word __rel_dyn_start - _start
+_rel_dyn_end_ofs:
+	.word __rel_dyn_end - _start
+_dynsym_start_ofs:
+	.word __dynsym_start - _start
 
 #ifdef CONFIG_ENABLE_MMU
 _mmu_table_base:

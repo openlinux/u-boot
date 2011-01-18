@@ -48,21 +48,23 @@
  *-------------------------------------------------------------------------------
  */
 
-/*  U-Boot - Startup Code for AMCC 4xx PowerPC based Embedded Boards
+/*
+ * Startup code for IBM/AMCC PowerPC 4xx (PPC4xx) based boards
  *
+ * The following description only applies to the NOR flash style booting.
+ * NAND booting is different. For more details about NAND booting on 4xx
+ * take a look at doc/README.nand-boot-ppc440.
  *
- *  The processor starts at 0xfffffffc and the code is executed
- *  from flash/rom.
- *  in memory, but as long we don't jump around before relocating.
- *  board_init lies at a quite high address and when the cpu has
- *  jumped there, everything is ok.
- *  This works because the cpu gives the FLASH (CS0) the whole
- *  address space at startup, and board_init lies as a echo of
- *  the flash somewhere up there in the memorymap.
- *
- *  board_init will change CS0 to be positioned at the correct
- *  address and (s)dram will be positioned at address 0
+ * The CPU starts at address 0xfffffffc (last word in the address space).
+ * The U-Boot image therefore has to be located in the "upper" area of the
+ * flash (e.g. 512MiB - 0xfff80000 ... 0xffffffff). The default value for
+ * the boot chip-select (CS0) is quite big and covers this area. On the
+ * 405EX this is for example 0xffe00000 ... 0xffffffff. U-Boot will
+ * reconfigure this CS0 (and other chip-selects as well when configured
+ * this way) in the boot process to the "correct" values matching the
+ * board layout.
  */
+
 #include <asm-offsets.h>
 #include <config.h>
 #include <asm/ppc4xx.h>
@@ -265,7 +267,7 @@
 	/* NOTREACHED - board_init_f() does not return */
 #endif
 
-#if defined(CONFIG_SYS_RAMBOOT)
+#if defined(CONFIG_SYS_RAMBOOT) || defined(CONFIG_BOOT_FROM_XMD)
 	/*
 	 * 4xx RAM-booting U-Boot image is started from offset 0
 	 */
@@ -1389,8 +1391,8 @@ in32r:
 relocate_code:
 #if defined(CONFIG_4xx_DCACHE) || defined(CONFIG_SYS_INIT_DCACHE_CS)
 	/*
-	 * We need to flush the initial global data (gd_t) before the dcache
-	 * will be invalidated.
+	 * We need to flush the initial global data (gd_t) and bd_info
+	 * before the dcache will be invalidated.
 	 */
 
 	/* Save registers */
@@ -1398,10 +1400,11 @@ relocate_code:
 	mr	r10, r4
 	mr	r11, r5
 
-	/* Flush initial global data range */
-	mr	r3, r4
-	addi	r4, r4, GENERATED_GBL_DATA_SIZE@l
-	bl	flush_dcache_range
+	/*
+	 * Flush complete dcache, this is faster than flushing the
+	 * ranges for global_data and bd_info instead.
+	 */
+	bl	flush_dcache
 
 #if defined(CONFIG_SYS_INIT_DCACHE_CS)
 	/*

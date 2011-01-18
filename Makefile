@@ -24,7 +24,7 @@
 VERSION = 2010
 PATCHLEVEL = 12
 SUBLEVEL =
-EXTRAVERSION = -rc1
+EXTRAVERSION =
 ifneq "$(SUBLEVEL)" ""
 U_BOOT_VERSION = $(VERSION).$(PATCHLEVEL).$(SUBLEVEL)$(EXTRAVERSION)
 else
@@ -260,7 +260,7 @@ ifeq ($(SOC),s5pc2xx)
 LIBS += $(CPUDIR)/s5p-common/libs5p-common.o
 endif
 
-LIBS := $(addprefix $(obj),$(LIBS))
+LIBS := $(addprefix $(obj),$(sort $(LIBS)))
 .PHONY : $(LIBS) $(TIMESTAMP_FILE) $(VERSION_FILE)
 
 LIBBOARD = board/$(BOARDDIR)/lib$(BOARD).o

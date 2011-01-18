@@ -236,15 +236,42 @@ static int gen_is_phy_connected(int phy_addr)
 {
 	u_int16_t	dummy;
 
-	return(davinci_eth_phy_read(phy_addr, PHY_PHYIDR1, &dummy));
+	return(davinci_eth_phy_read(phy_addr, MII_PHYSID1, &dummy));
 }
 
 static int gen_get_link_speed(int phy_addr)
 {
 	u_int16_t	tmp;
 
-	if (davinci_eth_phy_read(phy_addr, MII_STATUS_REG, &tmp) && (tmp & 0x04))
+	if (davinci_eth_phy_read(phy_addr, MII_STATUS_REG, &tmp) &&
+			(tmp & 0x04)) {
+#if defined(CONFIG_DRIVER_TI_EMAC_USE_RMII) && \
+		defined(CONFIG_MACH_DAVINCI_DA850_EVM)
+		davinci_eth_phy_read(phy_addr, PHY_ANLPAR, &tmp);
+
+		/* Speed doesn't matter, there is no setting for it in EMAC. */
+		if (tmp & (PHY_ANLPAR_TXFD | PHY_ANLPAR_10FD)) {
+			/* set EMAC for Full Duplex  */
+			writel(EMAC_MACCONTROL_MIIEN_ENABLE |
+					EMAC_MACCONTROL_FULLDUPLEX_ENABLE,
+					&adap_emac->MACCONTROL);
+		} else {
+			/*set EMAC for Half Duplex  */
+			writel(EMAC_MACCONTROL_MIIEN_ENABLE,
+					&adap_emac->MACCONTROL);
+		}
+
+		if (tmp & (PHY_ANLPAR_TXFD | PHY_ANLPAR_TX))
+			writel(readl(&adap_emac->MACCONTROL) |
+					EMAC_MACCONTROL_RMIISPEED_100,
+					 &adap_emac->MACCONTROL);
+		else
+			writel(readl(&adap_emac->MACCONTROL) &
+					~EMAC_MACCONTROL_RMIISPEED_100,
+					 &adap_emac->MACCONTROL);
+#endif
 		return(1);
+	}
 
 	return(0);
 }
@@ -253,19 +280,19 @@ static int gen_auto_negotiate(int phy_addr)
 {
 	u_int16_t	tmp;
 
-	if (!davinci_eth_phy_read(phy_addr, PHY_BMCR, &tmp))
+	if (!davinci_eth_phy_read(phy_addr, MII_BMCR, &tmp))
 		return(0);
 
 	/* Restart Auto_negotiation  */
-	tmp |= PHY_BMCR_AUTON;
-	davinci_eth_phy_write(phy_addr, PHY_BMCR, tmp);
+	tmp |= BMCR_ANENABLE;
+	davinci_eth_phy_write(phy_addr, MII_BMCR, tmp);
 
 	/*check AutoNegotiate complete */
 	udelay (10000);
-	if (!davinci_eth_phy_read(phy_addr, PHY_BMSR, &tmp))
+	if (!davinci_eth_phy_read(phy_addr, MII_BMSR, &tmp))
 		return(0);
 
-	if (!(tmp & PHY_BMSR_AUTN_COMP))
+	if (!(tmp & BMSR_ANEGCOMPLETE))
 		return(0);
 
 	return(gen_get_link_speed(phy_addr));
@@ -326,6 +353,12 @@ static int davinci_eth_open(struct eth_device *dev, bd_t *bis)
 	}
 #endif
 
+#if defined(CONFIG_DRIVER_TI_EMAC_USE_RMII) && \
+	defined(CONFIG_MACH_DAVINCI_DA850_EVM)
+	adap_ewrap->c0rxen = adap_ewrap->c1rxen = adap_ewrap->c2rxen = 0;
+	adap_ewrap->c0txen = adap_ewrap->c1txen = adap_ewrap->c2txen = 0;
+	adap_ewrap->c0miscen = adap_ewrap->c1miscen = adap_ewrap->c2miscen = 0;
+#endif
 	rx_desc = emac_rx_desc;
 
 	writel(1, &adap_emac->TXCONTROL);
@@ -480,6 +513,12 @@ static void davinci_eth_close(struct eth_device *dev)
 	writel(0, &adap_ewrap->EWCTL);
 #endif
 
+#if defined(CONFIG_DRIVER_TI_EMAC_USE_RMII) && \
+	defined(CONFIG_MACH_DAVINCI_DA850_EVM)
+	adap_ewrap->c0rxen = adap_ewrap->c1rxen = adap_ewrap->c2rxen = 0;
+	adap_ewrap->c0txen = adap_ewrap->c1txen = adap_ewrap->c2txen = 0;
+	adap_ewrap->c0miscen = adap_ewrap->c1miscen = adap_ewrap->c2miscen = 0;
+#endif
 	debug_emac("- emac_close\n");
 }
 
@@ -655,14 +694,14 @@ int davinci_emac_initialize(void)
 		return(0);
 
 	/* Get PHY ID and initialize phy_ops for a detected PHY */
-	if (!davinci_eth_phy_read(active_phy_addr, PHY_PHYIDR1, &tmp)) {
+	if (!davinci_eth_phy_read(active_phy_addr, MII_PHYSID1, &tmp)) {
 		active_phy_addr = 0xff;
 		return(0);
 	}
 
 	phy_id = (tmp << 16) & 0xffff0000;
 
-	if (!davinci_eth_phy_read(active_phy_addr, PHY_PHYIDR2, &tmp)) {
+	if (!davinci_eth_phy_read(active_phy_addr, MII_PHYSID2, &tmp)) {
 		active_phy_addr = 0xff;
 		return(0);
 	}

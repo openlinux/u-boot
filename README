@@ -746,6 +746,10 @@ The following options need to be configured:
 		CONFIG_PCA953X		- use NXP's PCA953X series I2C GPIO
 		CONFIG_PCA953X_INFO	- enable pca953x info command
 
+		The CONFIG_SYS_I2C_PCA953X_WIDTH option specifies a list of
+		chip-ngpio pairs that tell the PCA953X driver the number of
+		pins supported by a particular chip.
+
 		Note that if the GPIO device uses I2C, then the I2C interface
 		must also be configured. See I2C Support, below.
 
@@ -860,6 +864,18 @@ The following options need to be configured:
 			CONFIG_SMC_USE_IOFUNCS
 			Define this to use i/o functions instead of macros
 			(some hardware wont work with macros)
+
+		CONFIG_FTGMAC100
+		Support for Faraday's FTGMAC100 Gigabit SoC Ethernet
+
+			CONFIG_FTGMAC100_EGIGA
+			Define this to use GE link update with gigabit PHY.
+			Define this if FTGMAC100 is connected to gigabit PHY.
+			If your system has 10/100 PHY only, it might not occur
+			wrong behavior. Because PHY usually return timeout or
+			useless data when polling gigabit status and gigabit
+			control registers. This behavior won't affect the
+			correctnessof 10/100 link speed update.
 
 		CONFIG_SMC911X
 		Support for SMSC's LAN911x and LAN921x chips
@@ -2771,6 +2787,24 @@ Low Level (hardware related) configuration options:
 		Disable PCI-Express on systems where it is supported but not
 		required.
 
+- CONFIG_SYS_SRIO:
+		Chip has SRIO or not
+
+- CONFIG_SRIO1:
+		Board has SRIO 1 port available
+
+- CONFIG_SRIO2:
+		Board has SRIO 2 port available
+
+- CONFIG_SYS_SRIOn_MEM_VIRT:
+		Virtual Address of SRIO port 'n' memory region
+
+- CONFIG_SYS_SRIOn_MEM_PHYS:
+		Physical Address of SRIO port 'n' memory region
+
+- CONFIG_SYS_SRIOn_MEM_SIZE:
+		Size of SRIO port 'n' memory region
+
 - CONFIG_SPD_EEPROM
 		Get DDR timing information from an I2C EEPROM. Common
 		with pluggable memory modules such as SODIMMs
@@ -2836,15 +2870,15 @@ Low Level (hardware related) configuration options:
 		globally (CONFIG_CMD_MEM).
 
 - CONFIG_SKIP_LOWLEVEL_INIT
-                [ARM only] If this variable is defined, then certain
-                low level initializations (like setting up the memory
-                controller) are omitted and/or U-Boot does not
-                relocate itself into RAM.
+		[ARM only] If this variable is defined, then certain
+		low level initializations (like setting up the memory
+		controller) are omitted and/or U-Boot does not
+		relocate itself into RAM.
 
-                Normally this variable MUST NOT be defined. The only
-                exception is when U-Boot is loaded (to RAM) by some
-                other boot loader or by a debugger which performs
-                these initializations itself.
+		Normally this variable MUST NOT be defined. The only
+		exception is when U-Boot is loaded (to RAM) by some
+		other boot loader or by a debugger which performs
+		these initializations itself.
 
 - CONFIG_PRELOADER
 		Modifies the behaviour of start.S when compiling a loader

@@ -198,6 +198,14 @@ Siddarth Gore <gores@marvell.com>
 
 	guruplug	ARM926EJS (Kirkwood SoC)
 
+Paul Gortmaker <paul.gortmaker@windriver.com>
+
+	sbc8349		MPC8349
+	sbc8540		MPC8540
+	sbc8548		MPC8548
+	sbc8560		MPC8560
+	sbc8641d	MPC8641D
+
 Frank Gottschling <fgottschling@eltec.de>
 
 	MHPC		MPC8xx
@@ -211,11 +219,6 @@ Wolfgang Grandegger <wg@denx.de>
 	PN62		MPC8240
 	IPHASE4539	MPC8260
 	SCM		MPC8260
-
-Joe Hamman <joe.hamman@embeddedspecialties.com>
-
-	sbc8548		MPC8548
-	sbc8641d	MPC8641D
 
 Klaus Heydeck <heydeck@kieback-peter.de>
 
@@ -255,10 +258,6 @@ Sangmoon Kim <dogoil@etinsys.com>
 
 	debris		MPC8245
 	KVME080		MPC8245
-
-Robert Lazarski <robertlazarski@gmail.com>
-
-	ATUM8548	MPC8548
 
 The LEOX team <team@leox.org>
 
@@ -310,10 +309,11 @@ Tirumala Marri <tmarri@apm.com>
 
 	bluestone       APM821XX
 
-Reinhard Meyer <r.meyer@emk-elektronik.de>
+Reinhard Meyer <reinhard.meyer@emk-elektronik.de>
 
 	TOP860		MPC860T
 	TOP5200		MPC5200
+	TOP9000		ARM926EJS (AT91SAM9xxx SoC)
 
 Tolunay Orkun <torkun@nextio.com>
 
@@ -414,6 +414,7 @@ Georg Schardt <schardt@team-ctech.de>
 
 Heiko Schocher <hs@denx.de>
 
+	charon		MPC5200
 	ids8247		MPC8247
 	jupiter		MPC5200
 	kmeter1		MPC8360
@@ -524,8 +525,6 @@ Unknown / orphaned boards:
 	RPXClassic	MPC8xx
 	RPXlite		MPC8xx
 
-	ERIC		PPC4xx
-
 	MOUSSE		MPC824x
 
 	RPXsuper	MPC8260
@@ -551,6 +550,7 @@ Rowel Atienza <rowel@diwalabs.com>
 
 Stefano Babic <sbabic@denx.de>
 
+	ea20		davinci
 	polaris		xscale
 	trizepsiv	xscale
 	mx51evk		i.MX51
@@ -590,6 +590,10 @@ Rick Bronson <rick@efn.org>
 Po-Yu Chuang <ratbert@faraday-tech.com>
 
 	a320evb		FA526 (ARM920T-like) (a320 SoC)
+
+Eric Cooper <ecc@cmu.edu>
+
+	dockstar	ARM926EJS (Kirkwood SoC)
 
 George G. Davis <gdavis@mvista.com>
 
@@ -660,10 +664,6 @@ Matthias Kaehlcke <matthias@kaehlcke.net>
 
 Konstantin Kletschke <kletschke@synertronixx.de>
 	scb9328		ARM920T
-
-Simon Kagstrom <simon.kagstrom@netinsight.net>
-
-       openrd_base     ARM926EJS (Kirkwood SoC)
 
 Nishant Kamat <nskamat@ti.com>
 
@@ -834,7 +834,9 @@ Matt Waddel <matt.waddel@linaro.org>
 
 Prafulla Wadaskar <prafulla@marvell.com>
 
+	aspenite	ARM926EJS (ARMADA100 88AP168 SoC)
 	mv88f6281gtw_ge	ARM926EJS (Kirkwood SoC)
+	openrd_base     ARM926EJS (Kirkwood SoC)
 	rd6281a		ARM926EJS (Kirkwood SoC)
 	sheevaplug	ARM926EJS (Kirkwood SoC)
 
@@ -850,6 +852,11 @@ Alex Züpke <azu@sysgo.de>
 
 	lart		SA1100
 	dnp1110		SA1110
+
+Syed Mohammed Khasim <sm.khasim@gmail.com>
+Sughosh Ganu <urwithsughosh@gmail.com>
+
+	hawkboard	ARM926EJS (OMAP-L138)
 
 -------------------------------------------------------------------------
 
@@ -1003,6 +1010,7 @@ Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
 	SH7763RDP	SH7763
 	RSK7203		SH7203
 	AP325RXA	SH7723
+	SHMIN		SH7706
 
 Mark Jonas <mark.jonas@de.bosch.com>
 
@@ -1025,6 +1033,7 @@ Blackfin Team <u-boot-devel@blackfin.uclinux.org>
 
 	BF518F-EZBRD	BF518
 	BF526-EZBRD	BF526
+	BF527-AD7160-EVAL	BF527
 	BF527-EZKIT	BF527
 	BF527-EZKIT-V2	BF527
 	BF527-SDP	BF527
@@ -1036,10 +1045,31 @@ Blackfin Team <u-boot-devel@blackfin.uclinux.org>
 	BF548-EZKIT	BF548
 	BF561-EZKIT	BF561
 
-	BF527-AD7160-EVAL	BF527
+Brent Kandetzki <brentk@teleco.com>
+
+	IP04		BF532
+
+Peter Meerwald <devel@bct-electronic.com>
+
+	bct-brettl2	BF536
+
+I-SYST Micromodule <support@i-syst.com>
+
+	IBF-DSP561	BF561
+
+Wojtek Skulski <skulski@pas.rochester.edu>
+Wojtek Skulski <info@skutek.com>
+Benjamin Matthews <mben12@gmail.com>
+
+	BlackStamp	BF533
+	BlackVME	BF561
+
+Martin Strubel <strubel@section5.ch>
+
+	BF537-minotaur	BF537
+	BF537-srv1	BF537
 
 Bluetechnix Tinyboards <bluetechnix@blackfin.uclinux.org>
-Blackfin Team <u-boot-devel@blackfin.uclinux.org>
 
 	CM-BF527	BF527
 	CM-BF533	BF533
@@ -1050,37 +1080,10 @@ Blackfin Team <u-boot-devel@blackfin.uclinux.org>
 	TCM-BF518	BF518
 	TCM-BF537	BF537
 
-Martin Strubel <strubel@section5.ch>
-Blackfin Team <u-boot-devel@blackfin.uclinux.org>
-
-	BF537-minotaur	BF537
-	BF537-srv1	BF537
-
-Wojtek Skulski <skulski@pas.rochester.edu>
-Wojtek Skulski <info@skutek.com>
-Blackfin Team <u-boot-devel@blackfin.uclinux.org>
-Benjamin Matthews <mben12@gmail.com>
-
-	BlackStamp	BF533
-	BlackVME	BF561
-
-I-SYST Micromodule <support@i-syst.com>
-Blackfin Team <u-boot-devel@blackfin.uclinux.org>
-
-	IBF-DSP561	BF561
-
 Valentin Yakovenkov <yakovenkov@niistt.ru>
 Anton Shurpin <shurpin.aa@niistt.ru>
 
 	BF561-ACVILON	BF561
-
-Brent Kandetzki <brentk@teleco.com>
-
-	IP04		BF532
-
-Peter Meerwald <devel@bct-electronic.com>
-
-	bct-brettl2	BF536
 
 #########################################################################
 # End of MAINTAINERS list						#
