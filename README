@@ -675,7 +675,7 @@ The following options need to be configured:
 					  (requires CONFIG_CMD_I2C)
 		CONFIG_CMD_SETGETDCR	  Support for DCR Register access
 					  (4xx only)
-		CONFIG_CMD_SHA1		  print sha1 memory digest
+		CONFIG_CMD_SHA1SUM	  print sha1 memory digest
 					  (requires CONFIG_CMD_MEMORY)
 		CONFIG_CMD_SOURCE	  "source" command Support
 		CONFIG_CMD_SPI		* SPI serial bus support
@@ -891,6 +891,18 @@ The following options need to be configured:
 			Define this if data bus is 16 bits. If your processor
 			automatically converts one 32 bit word to two 16 bit
 			words you may also try CONFIG_SMC911X_32_BIT.
+
+		CONFIG_SH_ETHER
+		Support for Renesas on-chip Ethernet controller
+
+			CONFIG_SH_ETHER_USE_PORT
+			Define the number of ports to be used
+
+			CONFIG_SH_ETHER_PHY_ADDR
+			Define the ETH PHY's address
+
+			CONFIG_SH_ETHER_CACHE_WRITEBACK
+			If this option is set, the driver enables cache flush.
 
 - USB Support:
 		At the moment only the UHCI host controller is
@@ -1647,6 +1659,11 @@ The following options need to be configured:
 		Enables SPI driver (so far only tested with
 		SPI EEPROM, also an instance works with Crystal A/D and
 		D/As on the SACSng board)
+
+		CONFIG_SH_SPI
+
+		Enables the driver for SPI controller on SuperH. Currently
+		only SH7757 is supported.
 
 		CONFIG_SPI_X
 

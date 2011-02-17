@@ -26,6 +26,10 @@
 #define CONFIG_SYS_TEXT_BASE	0xeff80000
 #endif
 
+#ifndef CONFIG_RESET_VECTOR_ADDRESS
+#define CONFIG_RESET_VECTOR_ADDRESS	0xeffffffc
+#endif
+
 #define CONFIG_FSL_ELBC			/* Has Enhanced localbus controller */
 #define CONFIG_PCI			/* Enable PCI/PCIE */
 #define CONFIG_PCIE1			/* PCIE controler 1 (slot 1) */
@@ -147,7 +151,7 @@
 #define CONFIG_SYS_OR2_PRELIM	(OR_AM_32KB | 0x6ff7)
 
 #define PIXIS_LBMAP_SWITCH	7
-#define PIXIS_LBMAP_MASK	0xE0
+#define PIXIS_LBMAP_MASK	0xF0
 #define PIXIS_LBMAP_ALTBANK	0x20
 
 #define CONFIG_SYS_INIT_RAM_LOCK

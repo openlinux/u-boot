@@ -48,6 +48,10 @@
 #define CONFIG_SYS_TEXT_BASE	0xeff80000
 #endif
 
+#ifndef CONFIG_RESET_VECTOR_ADDRESS
+#define CONFIG_RESET_VECTOR_ADDRESS	0xeffffffc
+#endif
+
 #ifndef CONFIG_SYS_MONITOR_BASE
 #define CONFIG_SYS_MONITOR_BASE	CONFIG_SYS_TEXT_BASE	/* start of monitor */
 #endif
@@ -132,6 +136,7 @@
 #define CONFIG_SPD_EEPROM		/* Use SPD EEPROM for DDR setup */
 #define CONFIG_DDR_SPD
 
+#define CONFIG_DDR_ECC
 #define CONFIG_ECC_INIT_VIA_DDRCONTROLLER
 #define CONFIG_MEM_INIT_VALUE	0xDeadBeef
 
@@ -650,12 +655,12 @@
  */
 #include <config_cmd_default.h>
 
+#define CONFIG_CMD_ERRATA
 #define CONFIG_CMD_IRQ
 #define CONFIG_CMD_PING
 #define CONFIG_CMD_I2C
 #define CONFIG_CMD_MII
 #define CONFIG_CMD_ELF
-#define CONFIG_CMD_IRQ
 #define CONFIG_CMD_SETEXPR
 #define CONFIG_CMD_REGINFO
 
