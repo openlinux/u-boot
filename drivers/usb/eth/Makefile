@@ -1,7 +1,5 @@
 #
-# (C) Copyright 2000-2007
-# Wolfgang Denk, DENX Software Engineering, wd@denx.de.
-#
+# Copyright (c) 2011 The Chromium OS Authors.
 # See file CREDITS for list of people who contributed to this
 # project.
 #
@@ -12,7 +10,7 @@
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
@@ -23,23 +21,12 @@
 
 include $(TOPDIR)/config.mk
 
-LIB	:= $(obj)libusb_gadget.o
+LIB	:= $(obj)libusb_eth.a
 
-# new USB gadget layer dependencies
-ifdef CONFIG_USB_ETHER
-COBJS-y += ether.o epautoconf.o config.o usbstring.o
-COBJS-$(CONFIG_USB_ETH_RNDIS) += rndis.o
-else
-# Devices not related to the new gadget layer depend on CONFIG_USB_DEVICE
-ifdef CONFIG_USB_DEVICE
-COBJS-y += core.o
-COBJS-y += ep0.o
-COBJS-$(CONFIG_OMAP1510) += omap1510_udc.o
-COBJS-$(CONFIG_OMAP1610) += omap1510_udc.o
-COBJS-$(CONFIG_MPC885_FAMILY) += mpc8xx_udc.o
-COBJS-$(CONFIG_PXA27X) += pxa27x_udc.o
-COBJS-$(CONFIG_SPEARUDC) += spr_udc.o
-endif
+# new USB host ethernet layer dependencies
+COBJS-$(CONFIG_USB_HOST_ETHER) += usb_ether.o
+ifdef CONFIG_USB_ETHER_ASIX
+COBJS-y += asix.o
 endif
 
 COBJS	:= $(COBJS-y)
@@ -49,7 +36,7 @@ OBJS	:= $(addprefix $(obj),$(COBJS))
 all:	$(LIB)
 
 $(LIB):	$(obj).depend $(OBJS)
-	$(call cmd_link_o_target, $(OBJS))
+	$(AR) $(ARFLAGS) $@ $(OBJS)
 
 #########################################################################
 
